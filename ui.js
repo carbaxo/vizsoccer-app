@@ -29,7 +29,18 @@
   const stats = isPlans
     ? [['6', 'planes guiados'], ['3', 'días por semana'], ['4', 'semanas de progreso'], ['60', 'minutos por sesión']]
     : [['52', 'ejercicios animados'], ['26', 'individuales'], ['26', 'por parejas'], ['3', 'niveles de juego']];
-  header.innerHTML = `<nav class="site-nav" aria-label="Navegación principal"><a class="brand" href="index.html" aria-label="VizSoccer">${brandMark}<span class="brand-name">Viz<em>Soccer</em></span></a><div class="nav-actions"><a class="nav-link" href="${isPlans ? 'index.html' : 'planes.html'}">${isPlans ? '← Ejercicios' : 'Planes semanales →'}</a></div></nav><div class="hero"><div><div class="eyebrow">Tecnificación de fútbol</div><h1>${title}</h1><p class="hero-copy">${description}</p><a class="hero-action" href="${ctaHref}">${cta}</a></div><div class="hero-stats">${stats.map(([value,label]) => `<div class="hero-stat"><strong>${value}</strong><span>${label}</span></div>`).join('')}</div></div>`;
+  // La barra superior va FUERA de <header>: un `position:sticky` solo se pega
+  // dentro de la caja de su padre, así que dentro del header desaparecía en
+  // cuanto se pasaba el hero y dejaba un hueco por el que se veía el contenido.
+  header.innerHTML = `<div class="hero"><div><div class="eyebrow">Tecnificación de fútbol</div><h1>${title}</h1><p class="hero-copy">${description}</p><a class="hero-action" href="${ctaHref}">${cta}</a></div><div class="hero-stats">${stats.map(([value,label]) => `<div class="hero-stat"><strong>${value}</strong><span>${label}</span></div>`).join('')}</div></div>`;
+  header.insertAdjacentHTML('beforebegin', `<nav class="site-nav" aria-label="Navegación principal"><a class="brand" href="index.html" aria-label="VizSoccer">${brandMark}<span class="brand-name">Viz<em>Soccer</em></span></a><div class="nav-actions"><a class="nav-link" href="${isPlans ? 'index.html' : 'planes.html'}">${isPlans ? '← Ejercicios' : 'Planes'}</a></div></nav>`);
+  const siteNav = document.querySelector('.site-nav');
+  // Los filtros se pegan justo debajo de la barra, así que la altura hay que
+  // medirla: con el notch del móvil la barra es más alta que su min-height.
+  const syncTopOffset = () => document.documentElement.style
+    .setProperty('--top-h', `${Math.round(siteNav.getBoundingClientRect().height)}px`);
+  syncTopOffset();
+  new ResizeObserver(syncTopOffset).observe(siteNav);
 
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 
@@ -55,13 +66,13 @@
     applyTheme(next);
     syncThemeButton();
   });
-  header.querySelector('.nav-actions')?.prepend(themeButton);
+  siteNav.querySelector('.nav-actions')?.prepend(themeButton);
 
   let installPrompt;
   window.addEventListener('beforeinstallprompt', event => {
     event.preventDefault();
     installPrompt = event;
-    const actions = header.querySelector('.nav-actions');
+    const actions = siteNav.querySelector('.nav-actions');
     if (!actions || actions.querySelector('.install-button')) return;
     const button = document.createElement('button');
     button.className = 'install-button';
@@ -113,7 +124,7 @@
   main.id = isPlans ? 'planes' : 'ejercicios';
   const selects = [...filters.querySelectorAll('select')];
   const filterHtml = selects.map(select => `<label class="filter-field">${select.outerHTML}</label>`).join('');
-  filters.innerHTML = `<div class="filter-inner"><span class="filter-label">Filtrar por</span>${!isPlans ? '<label class="search-wrap"><input id="exercise-search" type="search" placeholder="Buscar ejercicio" aria-label="Buscar ejercicio"></label>' : ''}${filterHtml}${!isPlans ? '<button class="fav-filter" type="button" aria-pressed="false">☆ Favoritos</button>' : ''}<button class="reset-button" type="button">Limpiar</button></div>`;
+  filters.innerHTML = `<div class="filter-inner"><span class="filter-label">Filtrar por</span>${!isPlans ? '<label class="search-wrap"><input id="exercise-search" type="search" placeholder="Buscar ejercicio" aria-label="Buscar ejercicio"></label>' : ''}<div class="filter-chips">${filterHtml}${!isPlans ? '<button class="fav-filter" type="button" aria-pressed="false">☆ Favoritos</button>' : ''}<button class="reset-button" type="button">Limpiar</button></div></div>`;
   const liveSelects = [...filters.querySelectorAll('select')];
   const search = filters.querySelector('#exercise-search');
   const favFilterButton = filters.querySelector('.fav-filter');
