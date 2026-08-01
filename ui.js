@@ -11,6 +11,15 @@
   const escape = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
 
   const header = document.querySelector('header');
+  // Marca de VizSoccer: la misma V de dos brazos que generan los iconos
+  // (scripts/logo.py la imprime para poder incrustarla aquí sin recalcularla).
+  const brandMark = `<svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">`
+    + `<defs><linearGradient id="vs-nav" x1="0" y1="0" x2="1" y2="1">`
+    + `<stop offset="0" stop-color="#5FD400"/><stop offset="1" stop-color="#1A4700"/>`
+    + `</linearGradient></defs>`
+    + `<rect width="32" height="32" rx="7" fill="url(#vs-nav)"/>`
+    + `<path fill="#fff" d="M8.9,10.08 L16,22.52 L16,15.79 L12.74,10.08 Z"/>`
+    + `<path fill="#C7F58F" d="M23.1,10.08 L16,22.52 L16,15.79 L19.26,10.08 Z"/></svg>`;
   const title = isPlans ? 'Tu semana de entrenamiento, lista para jugar' : 'Entrena con intención. Mejora en cada toque.';
   const description = isPlans
     ? 'Selecciona el formato que mejor encaja contigo y sigue sesiones progresivas de tres días por semana.'
@@ -20,7 +29,7 @@
   const stats = isPlans
     ? [['6', 'planes guiados'], ['3', 'días por semana'], ['4', 'semanas de progreso'], ['60', 'minutos por sesión']]
     : [['52', 'ejercicios animados'], ['26', 'individuales'], ['26', 'por parejas'], ['3', 'niveles de juego']];
-  header.innerHTML = `<nav class="site-nav" aria-label="Navegación principal"><a class="brand" href="index.html"><span class="brand-mark">⚽</span>Fútbol técnico</a><div class="nav-actions"><a class="nav-link" href="${isPlans ? 'index.html' : 'planes.html'}">${isPlans ? '← Ejercicios' : 'Planes semanales →'}</a></div></nav><div class="hero"><div><div class="eyebrow">Tecnificación de fútbol</div><h1>${title}</h1><p class="hero-copy">${description}</p><a class="hero-action" href="${ctaHref}">${cta}</a></div><div class="hero-stats">${stats.map(([value,label]) => `<div class="hero-stat"><strong>${value}</strong><span>${label}</span></div>`).join('')}</div></div>`;
+  header.innerHTML = `<nav class="site-nav" aria-label="Navegación principal"><a class="brand" href="index.html" aria-label="VizSoccer">${brandMark}<span class="brand-name">Viz<em>Soccer</em></span></a><div class="nav-actions"><a class="nav-link" href="${isPlans ? 'index.html' : 'planes.html'}">${isPlans ? '← Ejercicios' : 'Planes semanales →'}</a></div></nav><div class="hero"><div><div class="eyebrow">Tecnificación de fútbol</div><h1>${title}</h1><p class="hero-copy">${description}</p><a class="hero-action" href="${ctaHref}">${cta}</a></div><div class="hero-stats">${stats.map(([value,label]) => `<div class="hero-stat"><strong>${value}</strong><span>${label}</span></div>`).join('')}</div></div>`;
 
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 

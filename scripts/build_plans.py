@@ -117,16 +117,16 @@ for p in plans:
 HEAD=("<!doctype html><html lang='es'><meta charset='utf-8'>"
  "<meta name='viewport' content='width=device-width,initial-scale=1,viewport-fit=cover'>"
  "<meta name='description' content='12 planes de tecnificación de fútbol de 3 días por semana, con sesiones de 60 minutos que trabajan todas las áreas, modo entrenamiento guiado, cronómetro y demostraciones animadas.'>"
- "<meta name='theme-color' content='#09283b'>"
+ "<meta name='theme-color' content='#0a1409'>"
  "<script>try{var _t=JSON.parse(localStorage.getItem('ft:tema'));document.documentElement.dataset.theme=_t||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')}catch(e){}</script>"
  "<link rel='manifest' href='manifest.webmanifest'><link rel='icon' type='image/png' href='icon-192.png'><link rel='apple-touch-icon' href='apple-touch-icon.png'>"
- "<title>Planes de tecnificación</title>")
-STYLE=("<style>*{box-sizing:border-box}body{margin:0;font:15px system-ui;background:#eef3f6;color:#102a43}"
- "header{padding:32px 5vw;background:linear-gradient(135deg,#102a43,#145da0);color:white}header h1{margin:0 0 8px}"
+ "<title>VizSoccer · Planes de entrenamiento</title>")
+STYLE=("<style>*{box-sizing:border-box}body{margin:0;font:15px system-ui;background:#f1f7ea;color:#101d0b}"
+ "header{padding:32px 5vw;background:linear-gradient(135deg,#1a4700,#44bb00);color:white}header h1{margin:0 0 8px}"
  ".filters{position:sticky;top:0;padding:14px 5vw;background:#fffe;display:flex;gap:10px;box-shadow:0 2px 12px #0002}"
- "select{padding:10px;border:1px solid #ccd6df;border-radius:8px}main{padding:24px 5vw;display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px}"
- ".plan{background:white;border-radius:16px;padding:20px;box-shadow:0 6px 22px #102a4315}.tag{display:inline-block;background:#dceeff;color:#145da0;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:700}"
- "h2{font-size:21px}h3{font-size:15px;margin-bottom:6px;border-top:1px solid #e4ebf1;padding-top:12px}ul{margin:0;padding-left:20px;line-height:1.55}.hide{display:none}</style>")
+ "select{padding:10px;border:1px solid #d6e4c8;border-radius:8px}main{padding:24px 5vw;display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px}"
+ ".plan{background:white;border-radius:16px;padding:20px;box-shadow:0 6px 22px #101d0b15}.tag{display:inline-block;background:#e2eed6;color:#2f7d00;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:700}"
+ "h2{font-size:21px}h3{font-size:15px;margin-bottom:6px;border-top:1px solid #d6e4c8;padding-top:12px}ul{margin:0;padding-left:20px;line-height:1.55}.hide{display:none}</style>")
 FILTERS=("<div class='filters'><select id='p'><option value=''>Jugadores: todos</option><option value='1'>Individual</option><option value='2'>Pareja</option></select>"
  "<select id='n'><option value=''>Nivel: todos</option><option>iniciación</option><option>intermedio</option><option>avanzado</option></select></div>")
 SCRIPT=("<script>const q=s=>document.querySelector(s),f=()=>document.querySelectorAll('.plan').forEach(c=>c.classList.toggle('hide',(q('#p').value&&c.dataset.p!=q('#p').value)||(q('#n').value&&c.dataset.n!=q('#n').value)));document.querySelectorAll('select').forEach(x=>x.onchange=f)</script>"

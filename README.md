@@ -1,6 +1,8 @@
-# Biblioteca de tecnificación de fútbol
+# VizSoccer
 
-52 ejercicios: 26 individuales y 26 por parejas (incluye 12 ejercicios avanzados, 6 de ellos de finalización).
+![VizSoccer](brand/logo.svg)
+
+Biblioteca de tecnificación de fútbol: 52 ejercicios (26 individuales y 26 por parejas, incluidos 12 avanzados, 6 de ellos de finalización).
 
 ## Contenido
 
@@ -8,6 +10,7 @@
 - `planes.html`: planes filtrables de 3 días por semana.
 - `ejercicios.json` y `ejercicios.csv`: base de datos de ejercicios.
 - `planes_entrenamiento.json`, `planes_entrenamiento.csv` y `PLANES.md`: base de datos de planes.
+- `brand/`: logotipo de la marca (`logo.svg`, `logo-mark.svg`, `logo-wordmark.svg`).
 - `svg/`: un diagrama vectorial editable por ejercicio.
 - `gif/`: una demostración animada por ejercicio (fuente original).
 - `webp/`: las mismas demostraciones en WebP animado (~70 % más ligeras; es lo que carga la web).
@@ -31,7 +34,23 @@ El sitio funciona como aplicación instalable en Android (y escritorio): incluye
 
 Además, todo se guarda en el dispositivo (`localStorage`): sesiones completadas por plan y día, ejercicios favoritos (con filtro ★ en el catálogo) y preferencias. Las fichas se pueden compartir con enlaces directos del tipo `index.html#IND-01`, hay modo oscuro automático según el sistema y un aviso cuando se navega sin conexión.
 
-Para regenerar los iconos: `OUTPUT_DIR=. python3 scripts/build_icons.py` (requiere Pillow). Para regenerar los WebP animados a partir de los GIF: `OUTPUT_DIR=. python3 scripts/build_webp.py`. Al publicar cambios, incrementa `VERSION` en `sw.js` para invalidar la caché.
+Para regenerar el logotipo y los iconos: `OUTPUT_DIR=. python3 scripts/logo.py` (requiere Pillow para los PNG). Para regenerar los WebP animados a partir de los GIF: `OUTPUT_DIR=. python3 scripts/build_webp.py`. Al publicar cambios, incrementa `VERSION` en `sw.js` para invalidar la caché.
+
+## Marca
+
+El logotipo es una **V de dos brazos** más el logotipo partido en dos colores: **VIZ en blanco y SOCCER en verde**. Es la misma construcción que usa VizPlay, así que las dos apps se leen como una familia: la geometría se calcula en `scripts/logo.py` (no se dibuja a mano) para que la V del icono, la del logotipo y las letras tengan siempre las mismas proporciones.
+
+La paleta gira alrededor del verde de marca **`#44BB00`**:
+
+| Papel | Oscuro | Claro |
+| --- | --- | --- |
+| Verde de marca (rellenos, bordes) | `#44BB00` | `#44BB00` |
+| Verde de texto (`--primary-ink`) | `#63D916` | `#2F7D00` |
+| Fondo | `#0A1409` | `#F1F7EA` |
+| Superficie | `#121D10` | `#FFFFFF` |
+| Texto | `#E9F3E3` | `#101D0B` |
+
+El verde pleno no tiene contraste suficiente como texto sobre blanco, así que `--primary` se reserva para rellenos y bordes y `--primary-ink` para el texto. Los niveles usan una rampa que convive con el verde sin competir con él: lima (iniciación) → ámbar (intermedio) → coral (avanzado).
 
 ## Regenerar la colección
 
