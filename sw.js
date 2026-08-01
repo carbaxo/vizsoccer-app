@@ -1,5 +1,5 @@
 /* Service worker: deja la app usable sin conexión (campo sin cobertura). */
-const VERSION = 'v2';
+const VERSION = 'v3';
 const SHELL_CACHE = `shell-${VERSION}`;
 const MEDIA_CACHE = `media-${VERSION}`;
 const SHELL = [
