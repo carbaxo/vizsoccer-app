@@ -1,7 +1,8 @@
 (() => {
   const page = document.body;
   const isPlans = /planes\.html$/i.test(location.pathname);
-  page.classList.add(isPlans ? 'plans-page' : 'catalog-page');
+  const isPerfil = /perfil\.html$/i.test(location.pathname);
+  page.classList.add(isPerfil ? 'perfil-page' : isPlans ? 'plans-page' : 'catalog-page');
 
   // Preferencias y progreso guardados en el dispositivo.
   const store = {
@@ -20,20 +21,25 @@
     + `<rect width="32" height="32" rx="7" fill="url(#vs-nav)"/>`
     + `<path fill="#fff" d="M8.9,10.08 L16,22.52 L16,15.79 L12.74,10.08 Z"/>`
     + `<path fill="#C7F58F" d="M23.1,10.08 L16,22.52 L16,15.79 L19.26,10.08 Z"/></svg>`;
-  const title = isPlans ? 'Tu semana de entrenamiento, lista para jugar' : 'Entrena con intención. Mejora en cada toque.';
-  const description = isPlans
+  const title = isPerfil ? 'Tu ficha de jugador' : isPlans ? 'Tu semana de entrenamiento, lista para jugar' : 'Entrena con intención. Mejora en cada toque.';
+  const description = isPerfil
+    ? 'Cada ejercicio que marcas como hecho sube el área que trabaja. Los retos marcan el siguiente paso.'
+    : isPlans
     ? 'Selecciona el formato que mejor encaja contigo y sigue sesiones progresivas de tres días por semana.'
     : 'Una biblioteca visual de ejercicios para convertir cada sesión en una práctica clara, útil y motivadora.';
-  const cta = isPlans ? 'Explorar sesiones' : 'Ver planes de entrenamiento';
-  const ctaHref = isPlans ? '#planes' : 'planes.html';
-  const stats = isPlans
+  const cta = isPerfil ? 'Ir a entrenar' : isPlans ? 'Explorar sesiones' : 'Ver planes de entrenamiento';
+  const ctaHref = isPerfil ? 'index.html' : isPlans ? '#planes' : 'planes.html';
+  const fichaAhora = window.VS ? VS.ficha() : null;
+  const stats = isPerfil
+    ? []   // en el perfil manda la ficha: repetir aquí los números sobra
+    : isPlans
     ? [['6', 'planes guiados'], ['3', 'días por semana'], ['4', 'semanas de progreso'], ['60', 'minutos por sesión']]
     : [['52', 'ejercicios animados'], ['26', 'individuales'], ['26', 'por parejas'], ['3', 'niveles de juego']];
   // La barra superior va FUERA de <header>: un `position:sticky` solo se pega
   // dentro de la caja de su padre, así que dentro del header desaparecía en
   // cuanto se pasaba el hero y dejaba un hueco por el que se veía el contenido.
-  header.innerHTML = `<div class="hero"><div><div class="eyebrow">Tecnificación de fútbol</div><h1>${title}</h1><p class="hero-copy">${description}</p><a class="hero-action" href="${ctaHref}">${cta}</a></div><div class="hero-stats">${stats.map(([value,label]) => `<div class="hero-stat"><strong>${value}</strong><span>${label}</span></div>`).join('')}</div></div>`;
-  header.insertAdjacentHTML('beforebegin', `<nav class="site-nav" aria-label="Navegación principal"><a class="brand" href="index.html" aria-label="VizSoccer">${brandMark}<span class="brand-name">Viz<em>Soccer</em></span></a><div class="nav-actions"><a class="nav-link" href="${isPlans ? 'index.html' : 'planes.html'}">${isPlans ? '← Ejercicios' : 'Planes'}</a></div></nav>`);
+  header.innerHTML = `<div class="hero"><div><div class="eyebrow">Tecnificación de fútbol</div><h1>${title}</h1><p class="hero-copy">${description}</p><a class="hero-action" href="${ctaHref}">${cta}</a></div>${stats.length ? `<div class="hero-stats">` : ''}${stats.map(([value,label]) => `<div class="hero-stat"><strong>${value}</strong><span>${label}</span></div>`).join('')}${stats.length ? '</div>' : ''}</div>`;
+  header.insertAdjacentHTML('beforebegin', `<nav class="site-nav" aria-label="Navegación principal"><a class="brand" href="index.html" aria-label="VizSoccer">${brandMark}<span class="brand-name">Viz<em>Soccer</em></span></a><div class="nav-actions"><a class="nav-link" href="perfil.html"><img class="nav-avatar" src="art/avatar-${(window.VS ? VS.activo().color : 0) % 6}.svg" alt="" width="96" height="96">${window.VS ? escape(VS.activo().nombre) : 'Perfil'}</a></div></nav>`);
   const siteNav = document.querySelector('.site-nav');
   // Los filtros se pegan justo debajo de la barra, así que la altura hay que
   // medirla: con el notch del móvil la barra es más alta que su min-height.
@@ -67,6 +73,13 @@
     syncThemeButton();
   });
   siteNav.querySelector('.nav-actions')?.prepend(themeButton);
+
+  // El acceso al perfil de la barra muestra el perfil activo, así que hay que
+  // repintarlo cuando se cambia de perfil o se le cambia el nombre.
+  const enlacePerfil = siteNav.querySelector('.nav-link');
+  window.VS?.alCambiar(p => {
+    enlacePerfil.innerHTML = `<img class="nav-avatar" src="art/avatar-${p.color % 6}.svg" alt="" width="96" height="96">${escape(p.nombre)}`;
+  });
 
   let installPrompt;
   window.addEventListener('beforeinstallprompt', event => {
@@ -115,7 +128,9 @@
   // Barra de navegación inferior tipo app.
   const bottomNav = document.createElement('nav');
   bottomNav.className = 'bottom-nav';
-  bottomNav.innerHTML = `<a class="bn-item ${isPlans ? '' : 'active'}" href="index.html"><span class="bn-ico">⚽</span>Ejercicios</a><a class="bn-item ${isPlans ? 'active' : ''}" href="planes.html"><span class="bn-ico">🗓️</span>Planes</a>`;
+  const pestanas = [['index.html', '⚽', 'Ejercicios', !isPlans && !isPerfil], ['planes.html', '🗓️', 'Planes', isPlans], ['perfil.html', '🏅', 'Perfil', isPerfil]];
+  bottomNav.innerHTML = pestanas.map(([href, ico, txt, on]) =>
+    `<a class="bn-item ${on ? 'active' : ''}" href="${href}"><span class="bn-ico">${ico}</span>${txt}</a>`).join('');
   document.body.append(bottomNav);
 
   const filters = document.querySelector('.filters');
@@ -141,7 +156,7 @@
   main.append(empty);
 
   // Favoritos (catálogo).
-  const favs = new Set(store.get('ft:favoritos', []));
+  const favs = new Set(window.VS ? VS.activo().favoritos : store.get('ft:favoritos', []));
   let favsOnly = false;
 
   const apply = () => {
@@ -188,7 +203,7 @@
   // Ficha de ejercicio (modal compartido por catálogo y planes).
   const dialog = document.createElement('dialog');
   dialog.className = 'exercise-modal';
-  dialog.innerHTML = `<button class="modal-close" type="button" aria-label="Cerrar ficha">×</button><div class="modal-content"><div class="modal-media"><img alt="" /></div><div class="modal-copy"><span class="modal-kicker">${isPlans ? 'Ejercicio del plan' : 'Ficha del ejercicio'}</span><h2></h2><p class="modal-meta"></p><div class="modal-description"></div><ol class="modal-steps"></ol><dl class="modal-facts"></dl><button class="share-exercise" type="button">Compartir ejercicio</button></div></div>`;
+  dialog.innerHTML = `<button class="modal-close" type="button" aria-label="Cerrar ficha">×</button><div class="modal-content"><div class="modal-media"><img alt="" /></div><div class="modal-copy"><span class="modal-kicker">${isPlans ? 'Ejercicio del plan' : 'Ficha del ejercicio'}</span><h2></h2><p class="modal-meta"></p><div class="modal-description"></div><ol class="modal-steps"></ol><dl class="modal-facts"></dl><div class="modal-acciones"><button class="marcar-hecho" type="button">✓ Marcar como hecho</button><button class="share-exercise" type="button">Compartir</button></div></div></div>`;
   document.body.append(dialog);
   trackDialog(dialog);
   const modalImage = dialog.querySelector('img');
@@ -198,8 +213,32 @@
   const modalFacts = dialog.querySelector('.modal-facts');
   const modalSteps = dialog.querySelector('.modal-steps');
   const shareButton = dialog.querySelector('.share-exercise');
+  const doneButton = dialog.querySelector('.marcar-hecho');
+
+  /* Aviso flotante al marcar un ejercicio: dice qué área ha subido y celebra
+   * los retos recién ganados. Es el único premio inmediato que tiene la app,
+   * así que conviene que se vea. */
+  const celebrar = cambio => {
+    if (!cambio) return;
+    const trozos = [];
+    if (cambio.atributo) trozos.push(`<strong>${cambio.atributo.nombre} ${cambio.subida > 0 ? `+${cambio.subida}` : 'al día'}</strong>`);
+    if (cambio.general > cambio.generalAntes) trozos.push(`General ${cambio.generalAntes} → <b>${cambio.general}</b>`);
+    if (cambio.subeNivel) trozos.push(`¡Nivel ${cambio.subeNivel}!`);
+    cambio.retos.forEach(r => trozos.push(`🏅 Reto: ${escape(r.nombre)}`));
+    const aviso = document.createElement('div');
+    aviso.className = 'brindis';
+    aviso.setAttribute('role', 'status');
+    aviso.innerHTML = trozos.join(' · ') || '<strong>Ejercicio registrado</strong>';
+    // Un <dialog> abierto vive en la capa superior: si el aviso cuelga del
+    // body queda detrás y no se ve.
+    (document.querySelector('dialog[open]') || document.body).append(aviso);
+    requestAnimationFrame(() => aviso.classList.add('show'));
+    setTimeout(() => { aviso.classList.remove('show'); setTimeout(() => aviso.remove(), 400); }, 3200);
+  };
+
   const openExercise = async id => {
     dialog.dataset.exercise = id || '';
+    syncDone(id);
     modalTitle.textContent = 'Cargando ejercicio…'; modalMeta.innerHTML = ''; modalDescription.innerHTML = ''; modalFacts.innerHTML = ''; modalSteps.innerHTML = ''; modalImage.removeAttribute('src'); openDialog(dialog);
     try {
       const exercise = (await loadDetails()).get(id);
@@ -215,6 +254,18 @@
     } catch { modalTitle.textContent = 'No se pudo cargar este ejercicio'; modalDescription.innerHTML = '<p>Vuelve a intentarlo en unos segundos.</p>'; }
   };
   dialog.querySelector('.modal-close').addEventListener('click', () => dialog.close());
+  const syncDone = id => {
+    const veces = window.VS ? VS.vecesHecho(id) : 0;
+    doneButton.textContent = veces ? `✓ Hecho ${veces}${veces > 1 ? ' veces' : ' vez'} · repetir` : '✓ Marcar como hecho';
+    doneButton.classList.toggle('on', !!veces);
+  };
+  doneButton.addEventListener('click', () => {
+    const id = dialog.dataset.exercise;
+    if (!id || !window.VS) return;
+    celebrar(VS.registrarEjercicio(id));
+    syncDone(id);
+    doneButton.classList.remove('late'); void doneButton.offsetWidth; doneButton.classList.add('late');
+  });
   shareButton.addEventListener('click', async () => {
     const id = dialog.dataset.exercise;
     if (!id) return;
@@ -257,7 +308,7 @@
       star.addEventListener('click', event => {
         event.stopPropagation();
         favs.has(id) ? favs.delete(id) : favs.add(id);
-        store.set('ft:favoritos', [...favs]);
+        window.VS ? VS.alternarFavorito(id) : store.set('ft:favoritos', [...favs]);
         syncStar();
         if (favsOnly) apply();
       });
@@ -297,7 +348,7 @@
     });
 
     // Progreso guardado en el dispositivo: sesiones completadas por plan y día.
-    const progressData = () => store.get('ft:progreso', {});
+    const progressData = () => (window.VS ? VS.sesiones() : store.get('ft:progreso', {}));
     const totalSessions = () => Object.values(progressData()).reduce((sum, plan) => sum + Object.keys(plan).length, 0);
     const formatDay = iso => new Date(`${iso}T12:00:00`).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
     const refreshPlanBadges = () => cards.forEach(card => {
@@ -448,9 +499,15 @@
     const finishWorkout = () => {
       stopTimer();
       clearAuto();
-      const progress = progressData();
-      (progress[workoutState.plan.nombre] ||= {})[workoutState.session.dia] = new Date().toISOString().slice(0, 10);
-      store.set('ft:progreso', progress);
+      if (window.VS) {
+        VS.registrarSesion(workoutState.plan.nombre, workoutState.session.dia);
+        // La sesión también cuenta para la ficha: se anota cada ejercicio del día.
+        (workoutState.session.bloques || []).forEach(b => b.ejercicio_id && VS.registrarEjercicio(b.ejercicio_id));
+      } else {
+        const progress = progressData();
+        (progress[workoutState.plan.nombre] ||= {})[workoutState.session.dia] = new Date().toISOString().slice(0, 10);
+        store.set('ft:progreso', progress);
+      }
       refreshPlanBadges();
       const total = totalSessions();
       run.classList.add('hide'); setup.classList.remove('hide');
