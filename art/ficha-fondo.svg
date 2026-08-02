@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 420" width="300" height="420" fill="none">
+  <defs><linearGradient id="f-base" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#175A00"/><stop offset="1" stop-color="#05100A"/>
+  </linearGradient></defs>
+  <defs><linearGradient id="f-brillo" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.12"/>
+    <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+  </linearGradient></defs>
+  <rect width="300" height="420" rx="20" fill="url(#f-base)"/>
+  <g opacity="0.5">
+    <path d="M-420,0 L-394,0 L26,420 L0,420 Z" fill="#FFFFFF" opacity="0.075"/>
+    <path d="M-368,0 L-342,0 L78,420 L52,420 Z" fill="#FFFFFF" opacity="0.073"/>
+    <path d="M-316,0 L-290,0 L130,420 L104,420 Z" fill="#FFFFFF" opacity="0.071"/>
+    <path d="M-264,0 L-238,0 L182,420 L156,420 Z" fill="#FFFFFF" opacity="0.070"/>
+    <path d="M-212,0 L-186,0 L234,420 L208,420 Z" fill="#FFFFFF" opacity="0.068"/>
+    <path d="M-160,0 L-134,0 L286,420 L260,420 Z" fill="#FFFFFF" opacity="0.066"/>
+    <path d="M-108,0 L-82,0 L338,420 L312,420 Z" fill="#FFFFFF" opacity="0.064"/>
+    <path d="M-56,0 L-30,0 L390,420 L364,420 Z" fill="#FFFFFF" opacity="0.062"/>
+    <path d="M-4,0 L22,0 L442,420 L416,420 Z" fill="#FFFFFF" opacity="0.060"/>
+    <path d="M48,0 L74,0 L494,420 L468,420 Z" fill="#FFFFFF" opacity="0.059"/>
+    <path d="M100,0 L126,0 L546,420 L520,420 Z" fill="#FFFFFF" opacity="0.057"/>
+    <path d="M152,0 L178,0 L598,420 L572,420 Z" fill="#FFFFFF" opacity="0.055"/>
+    <path d="M204,0 L230,0 L650,420 L624,420 Z" fill="#FFFFFF" opacity="0.053"/>
+    <path d="M256,0 L282,0 L702,420 L676,420 Z" fill="#FFFFFF" opacity="0.051"/>
+    <path d="M308,0 L334,0 L754,420 L728,420 Z" fill="#FFFFFF" opacity="0.049"/>
+    <path d="M360,0 L386,0 L806,420 L780,420 Z" fill="#FFFFFF" opacity="0.048"/>
+    <path d="M412,0 L438,0 L858,420 L832,420 Z" fill="#FFFFFF" opacity="0.046"/>
+    <path d="M464,0 L490,0 L910,420 L884,420 Z" fill="#FFFFFF" opacity="0.044"/>
+    <path d="M516,0 L542,0 L962,420 L936,420 Z" fill="#FFFFFF" opacity="0.042"/>
+    <path d="M568,0 L594,0 L1014,420 L988,420 Z" fill="#FFFFFF" opacity="0.040"/>
+    <path d="M620,0 L646,0 L1066,420 L1040,420 Z" fill="#FFFFFF" opacity="0.039"/>
+    <path d="M672,0 L698,0 L1118,420 L1092,420 Z" fill="#FFFFFF" opacity="0.037"/>
+  </g>
+  <path d="M0,0 L300,0 L300,142.8 L0,218.4 Z" fill="url(#f-brillo)"/>
+</svg>

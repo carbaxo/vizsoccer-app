@@ -10,7 +10,9 @@ Biblioteca de tecnificación de fútbol: 52 ejercicios (26 individuales y 26 por
 - `planes.html`: planes filtrables de 3 días por semana.
 - `ejercicios.json` y `ejercicios.csv`: base de datos de ejercicios.
 - `planes_entrenamiento.json`, `planes_entrenamiento.csv` y `PLANES.md`: base de datos de planes.
+- `perfil.html`, `perfil.js` y `perfil-ui.js`: perfiles, ficha de jugador y retos.
 - `brand/`: logotipo de la marca (`logo.svg`, `logo-mark.svg`, `logo-wordmark.svg`).
+- `art/`: medallas de reto, avatares y fondo de la ficha (generados por script).
 - `svg/`: un diagrama vectorial editable por ejercicio.
 - `gif/`: una demostración animada por ejercicio (fuente original).
 - `webp/`: las mismas demostraciones en WebP animado (~70 % más ligeras; es lo que carga la web).
@@ -34,7 +36,19 @@ El sitio funciona como aplicación instalable en Android (y escritorio): incluye
 
 Además, todo se guarda en el dispositivo (`localStorage`): sesiones completadas por plan y día, ejercicios favoritos (con filtro ★ en el catálogo) y preferencias. Las fichas se pueden compartir con enlaces directos del tipo `index.html#IND-01`, hay modo oscuro automático según el sistema y un aviso cuando se navega sin conexión.
 
-Para regenerar el logotipo y los iconos: `OUTPUT_DIR=. python3 scripts/logo.py` (requiere Pillow para los PNG). Para regenerar los WebP animados a partir de los GIF: `OUTPUT_DIR=. python3 scripts/build_webp.py`. Al publicar cambios, incrementa `VERSION` en `sw.js` para invalidar la caché.
+Para regenerar el logotipo y los iconos: `OUTPUT_DIR=. python3 scripts/logo.py` (requiere Pillow para los PNG). Para regenerar las medallas, los avatares y el fondo de la ficha: `OUTPUT_DIR=. python3 scripts/build_art.py`. Para regenerar los WebP animados a partir de los GIF: `OUTPUT_DIR=. python3 scripts/build_webp.py`. Al publicar cambios, incrementa `VERSION` en `sw.js` para invalidar la caché.
+
+## Ficha de jugador, retos y perfiles
+
+La app lleva una **ficha de jugador** con un general y seis atributos —Ritmo, Tiro, Pase, Regate, Control y Físico— que suben solos: cada ejercicio marcado como hecho suma a su área. Los 14 `objetivo` del catálogo se agrupan en esos seis para que la ficha se lea de un vistazo.
+
+Cómo puntúa (todo en `perfil.js`):
+
+- Un avanzado vale 2,4 veces lo que uno de iniciación; un intermedio, 1,6. Si no, la ficha subiría igual repitiendo lo fácil y dejaría de medir nada.
+- Repetir el mismo ejercicio suma hasta cinco veces. A partir de ahí lo que hace falta es variar.
+- La curva es `40 + 59·(1 − e^(−puntos/26))`: sube deprisa al principio y se frena, así que los últimos puntos cuestan de verdad y nunca se llega del todo a 99.
+
+Hay **12 retos** que se miden solos sobre el progreso (variedad de áreas, rachas de días, ejercicios avanzados, colección completa…) y dan experiencia al cerrarse. Y **varios perfiles** en el mismo dispositivo, para dos hermanos con la misma tableta o un entrenador con sus chicos. Todo sigue en `localStorage`: no hay cuenta ni servidor. Al abrir la versión nueva, los favoritos y las sesiones que ya hubiera guardadas se migran al primer perfil.
 
 ## Marca
 

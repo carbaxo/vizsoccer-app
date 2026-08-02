@@ -130,7 +130,7 @@ STYLE=("<style>*{box-sizing:border-box}body{margin:0;font:15px system-ui;backgro
 FILTERS=("<div class='filters'><select id='p'><option value=''>Jugadores: todos</option><option value='1'>Individual</option><option value='2'>Pareja</option></select>"
  "<select id='n'><option value=''>Nivel: todos</option><option>iniciación</option><option>intermedio</option><option>avanzado</option></select></div>")
 SCRIPT=("<script>const q=s=>document.querySelector(s),f=()=>document.querySelectorAll('.plan').forEach(c=>c.classList.toggle('hide',(q('#p').value&&c.dataset.p!=q('#p').value)||(q('#n').value&&c.dataset.n!=q('#n').value)));document.querySelectorAll('select').forEach(x=>x.onchange=f)</script>"
- "<script src='data.js'></script><script defer src='ui.js'></script></html>")
+ "<script src='data.js'></script><script src='perfil.js'></script><script defer src='ui.js'></script></html>")
 HEADER="<header><h1>Planes de tecnificación</h1><p>3 días por semana · sesiones de 60 minutos que trabajan todas las áreas · progresión de 4 semanas</p></header>"
 (ROOT/'planes.html').write_text(f"{HEAD}{STYLE}<link rel=\"stylesheet\" href=\"ui.css\">{HEADER}{FILTERS}<main>{''.join(cards)}</main>{SCRIPT}",encoding='utf-8')
 

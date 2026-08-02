@@ -1,13 +1,16 @@
 /* Service worker: deja la app usable sin conexión (campo sin cobertura). */
-const VERSION = 'v4';
+const VERSION = 'v5';
 const SHELL_CACHE = `shell-${VERSION}`;
 const MEDIA_CACHE = `media-${VERSION}`;
 const SHELL = [
   './',
   './index.html',
   './planes.html',
+  './perfil.html',
   './ui.css',
   './ui.js',
+  './perfil.js',
+  './perfil-ui.js',
   './data.js',
   './ejercicios.json',
   './planes_entrenamiento.json',
