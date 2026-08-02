@@ -9,6 +9,31 @@
 
   const esc = v => String(v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c]));
   const menosMovimiento = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fotoPerfil = p => p.foto || `art/avatar-${p.color % 6}.svg`;
+
+  // Recorta la imagen al centro y la comprime antes de guardarla en el dispositivo.
+  const prepararFoto = file => new Promise((resolve, reject) => {
+    if (!file?.type.startsWith('image/')) { reject(new Error('El archivo no es una imagen')); return; }
+    if (file.size > 15 * 1024 * 1024) { reject(new Error('La imagen supera los 15 MB')); return; }
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const lado = Math.min(img.naturalWidth, img.naturalHeight);
+        const sx = (img.naturalWidth - lado) / 2;
+        const sy = (img.naturalHeight - lado) / 2;
+        const canvas = document.createElement('canvas');
+        canvas.width = canvas.height = 360;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#0f2a08'; ctx.fillRect(0, 0, 360, 360);
+        ctx.drawImage(img, sx, sy, lado, lado, 0, 0, 360, 360);
+        resolve(canvas.toDataURL('image/jpeg', .82));
+      } catch (error) { reject(error); }
+      finally { URL.revokeObjectURL(url); }
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('No se pudo leer la imagen')); };
+    img.src = url;
+  });
 
   /* Cuenta hasta el número final en vez de aparecer de golpe: es lo que hace
    * que una ficha se sienta "viva" cuando acabas de entrenar. */
@@ -44,7 +69,7 @@
           <div class="fj-cara fj-frente">
             <div class="fj-cabecera">
               <div class="fj-general"><strong data-general="${f.general}">0</strong><span>${esc(p.posicion)}</span></div>
-              <img class="fj-avatar" src="art/avatar-${p.color % 6}.svg" alt="" width="96" height="96">
+              <img class="fj-avatar" src="${esc(fotoPerfil(p))}" alt="" width="96" height="96">
             </div>
             <div class="fj-nombre">${esc(p.nombre)}</div>
             <div class="fj-atributos">${filas}</div>
@@ -96,7 +121,7 @@
     const activo = VS.activo();
     const fichas = VS.lista().map(p => `
       <button class="perfil-chip ${p.id === activo.id ? 'on' : ''}" type="button" data-perfil="${p.id}">
-        <img src="art/avatar-${p.color % 6}.svg" alt="" width="96" height="96">
+        <img src="${esc(fotoPerfil(p))}" alt="" width="96" height="96">
         <span>${esc(p.nombre)}</span>
       </button>`).join('');
     return `
@@ -104,6 +129,14 @@
         <div class="bloque-cab"><h2>Perfiles</h2><button class="reset-button" type="button" data-accion="nuevo">+ Añadir</button></div>
         <div class="perfil-chips">${fichas}</div>
         <form class="perfil-form" autocomplete="off">
+          <div class="perfil-foto-editor">
+            <img class="perfil-foto-preview" src="${esc(fotoPerfil(activo))}" alt="Foto de ${esc(activo.nombre)}" width="96" height="96">
+            <div class="perfil-foto-acciones">
+              <label class="perfil-foto-boton">📷 ${activo.foto ? 'Cambiar foto' : 'Añadir foto'}<input class="perfil-foto-input" type="file" accept="image/*"></label>
+              ${activo.foto ? '<button class="perfil-foto-quitar" type="button">Quitar foto</button>' : ''}
+              <small>Se recorta y guarda solo en este dispositivo.</small>
+            </div>
+          </div>
           <label>Nombre<input name="nombre" maxlength="18" value="${esc(activo.nombre)}"></label>
           <label>Posición<select name="posicion">${VS.POSICIONES.map(x => `<option ${x === activo.posicion ? 'selected' : ''}>${x}</option>`).join('')}</select></label>
           <label>Dorsal<input name="dorsal" type="number" min="1" max="99" value="${esc(activo.dorsal)}"></label>
@@ -140,12 +173,27 @@
       if (confirm(`¿Borrar el perfil "${VS.activo().nombre}" y todo su progreso?`)) VS.borrar(VS.activo().id);
     });
 
+    const fotoInput = raiz.querySelector('.perfil-foto-input');
+    fotoInput.addEventListener('change', async () => {
+      const file = fotoInput.files?.[0];
+      if (!file) return;
+      try {
+        fotoInput.disabled = true;
+        VS.actualizar({ foto: await prepararFoto(file) });
+      } catch (error) {
+        fotoInput.disabled = false;
+        alert(error.message || 'No se pudo guardar la foto');
+      }
+    });
+    raiz.querySelector('.perfil-foto-quitar')?.addEventListener('click', () => VS.actualizar({ foto: '' }));
+
     // El formulario guarda al vuelo; el nombre espera a que se deje de teclear
     // para no repintar la ficha en cada letra.
     const form = raiz.querySelector('.perfil-form');
     let espera;
     form.addEventListener('input', e => {
       const { name, value } = e.target;
+      if (!name || e.target.type === 'file') return;
       const campo = name === 'dorsal' || name === 'color' ? Number(value) : value;
       clearTimeout(espera);
       espera = setTimeout(() => VS.actualizar({ [name]: campo }), name === 'nombre' ? 500 : 0);

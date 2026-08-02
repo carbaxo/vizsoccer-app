@@ -47,6 +47,7 @@ window.VS = (() => {
     pie: extra.pie || 'derecho',
     dorsal: extra.dorsal || 10,
     color: extra.color || 0,
+    foto: extra.foto || '',
     creado: new Date().toISOString().slice(0, 10),
     hechos: {},      // id de ejercicio -> { veces, ultima }
     sesiones: {},    // nombre de plan -> { día: fecha }

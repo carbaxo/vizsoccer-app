@@ -10,6 +10,7 @@
     set(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} }
   };
   const escape = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
+  const avatar = p => escape(p?.foto || `art/avatar-${(p?.color || 0) % 6}.svg`);
 
   const header = document.querySelector('header');
   // Marca de VizSoccer: la misma V de dos brazos que generan los iconos
@@ -39,7 +40,7 @@
   // dentro de la caja de su padre, así que dentro del header desaparecía en
   // cuanto se pasaba el hero y dejaba un hueco por el que se veía el contenido.
   header.innerHTML = `<div class="hero"><div><div class="eyebrow">Tecnificación de fútbol</div><h1>${title}</h1><p class="hero-copy">${description}</p><a class="hero-action" href="${ctaHref}">${cta}</a></div>${stats.length ? `<div class="hero-stats">` : ''}${stats.map(([value,label]) => `<div class="hero-stat"><strong>${value}</strong><span>${label}</span></div>`).join('')}${stats.length ? '</div>' : ''}</div>`;
-  header.insertAdjacentHTML('beforebegin', `<nav class="site-nav" aria-label="Navegación principal"><a class="brand" href="index.html" aria-label="VizSoccer">${brandMark}<span class="brand-name">Viz<em>Soccer</em></span></a><div class="nav-actions"><a class="nav-link" href="perfil.html"><img class="nav-avatar" src="art/avatar-${(window.VS ? VS.activo().color : 0) % 6}.svg" alt="" width="96" height="96">${window.VS ? escape(VS.activo().nombre) : 'Perfil'}</a></div></nav>`);
+  header.insertAdjacentHTML('beforebegin', `<nav class="site-nav" aria-label="Navegación principal"><a class="brand" href="index.html" aria-label="VizSoccer">${brandMark}<span class="brand-name">Viz<em>Soccer</em></span></a><div class="nav-actions"><a class="nav-link" href="perfil.html"><img class="nav-avatar" src="${avatar(window.VS ? VS.activo() : null)}" alt="" width="96" height="96">${window.VS ? escape(VS.activo().nombre) : 'Perfil'}</a></div></nav>`);
   const siteNav = document.querySelector('.site-nav');
   // Los filtros se pegan justo debajo de la barra, así que la altura hay que
   // medirla: con el notch del móvil la barra es más alta que su min-height.
@@ -78,7 +79,7 @@
   // repintarlo cuando se cambia de perfil o se le cambia el nombre.
   const enlacePerfil = siteNav.querySelector('.nav-link');
   window.VS?.alCambiar(p => {
-    enlacePerfil.innerHTML = `<img class="nav-avatar" src="art/avatar-${p.color % 6}.svg" alt="" width="96" height="96">${escape(p.nombre)}`;
+    enlacePerfil.innerHTML = `<img class="nav-avatar" src="${avatar(p)}" alt="" width="96" height="96">${escape(p.nombre)}`;
   });
 
   let installPrompt;
@@ -145,10 +146,43 @@
   const favFilterButton = filters.querySelector('.fav-filter');
   const cards = [...main.children];
   const type = isPlans ? 'planes' : 'ejercicios';
+  let activeGoals = null;
+  let categoryButtons = [];
+  const categories = [
+    { id: 'ritmo', nombre: 'Ritmo', texto: 'Velocidad y reacción', objetivos: ['coordinación', 'reacción', 'giros'] },
+    { id: 'tiro', nombre: 'Tiro', texto: 'Finalización y precisión', objetivos: ['tiro', 'precisión'] },
+    { id: 'pase', nombre: 'Pase', texto: 'Paredes y desmarques', objetivos: ['pase', 'pared', 'desmarque'] },
+    { id: 'regate', nombre: 'Regate', texto: 'Conducción y cambios', objetivos: ['regate', 'conducción'] },
+    { id: 'control', nombre: 'Control', texto: 'Dominio y primer toque', objetivos: ['control', 'dominio'] },
+    { id: 'fisico', nombre: 'Físico', texto: 'Protección y equilibrio', objetivos: ['protección', 'mixto'] }
+  ];
   const intro = document.createElement('section');
   intro.className = 'catalog-intro';
   intro.innerHTML = `<div><h2>${isPlans ? 'Elige tu plan' : 'Encuentra tu próximo ejercicio'}</h2><p>${isPlans ? 'Filtra por modalidad, duración y nivel.' : 'Filtra por objetivo, nivel o número de jugadores.'}</p></div><span class="result-count" aria-live="polite"></span>`;
   main.before(intro);
+  if (!isPlans) {
+    const perfil = window.VS?.activo();
+    const ficha = window.VS?.ficha();
+    const xp = window.VS?.experiencia();
+    const sesiones = window.VS?.sesiones() || {};
+    const sesionesHechas = Object.values(sesiones).reduce((total, dias) => total + Object.keys(dias).length, 0);
+    const dashboard = document.createElement('section');
+    dashboard.className = 'explore-dashboard';
+    dashboard.innerHTML = `<div class="explore-welcome"><div><span class="explore-kicker">Asistente de entrenamiento</span><h1>${perfil ? `Hola, ${escape(perfil.nombre)}` : 'Empieza a mejorar hoy'}</h1><p>Elige un área y encuentra el ejercicio adecuado para esta sesión.</p></div>${ficha ? `<a class="level-pill" href="perfil.html"><strong>${ficha.general}</strong><span>Nivel ${xp.nivel}</span></a>` : ''}</div><div class="section-heading"><div><span>Explorar</span><h2>Categorías rápidas</h2></div><small>Desliza para verlas todas</small></div><div class="quick-categories">${categories.map(category => { const total = cards.filter(card => category.objetivos.includes(card.dataset.o)).length; return `<button class="quick-category cat-${category.id}" type="button" data-category="${category.id}" style="--category-image:var(--img-cat-${category.id})"><span><strong>${category.nombre}</strong><small>${category.texto}</small><em>${total} ejercicios</em></span></button>`; }).join('')}</div><div class="section-heading plans-heading"><div><span>Para ti</span><h2>Planes recomendados</h2></div><a href="planes.html">Ver todos →</a></div><a class="featured-plan" href="planes.html" style="--plan-image:var(--img-plan-individual-iniciacion)"><span class="featured-tag">Plan inicial</span><div><strong>Construye tu base técnica</strong><p>4 semanas · 3 días por semana</p><div class="featured-progress"><i style="width:${Math.min(100, sesionesHechas / 18 * 100)}%"></i></div><small>${sesionesHechas ? `${sesionesHechas} sesiones completadas` : 'Empieza tu primera sesión'}</small></div><b>→</b></a>`;
+    intro.before(dashboard);
+    dashboard.after(filters);
+    categoryButtons = [...dashboard.querySelectorAll('[data-category]')];
+    categoryButtons.forEach(button => button.addEventListener('click', () => {
+      const category = categories.find(item => item.id === button.dataset.category);
+      activeGoals = category.objetivos;
+      categoryButtons.forEach(item => item.classList.toggle('active', item === button));
+      liveSelects.forEach(select => { if (select.id === 'o') select.value = ''; });
+      intro.querySelector('h2').textContent = `Ejercicios de ${category.nombre}`;
+      intro.querySelector('p').textContent = category.texto;
+      apply();
+      filters.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }));
+  }
   const count = intro.querySelector('.result-count');
   const empty = document.createElement('div');
   empty.className = 'no-results hide';
@@ -163,7 +197,8 @@
     const term = search?.value.trim().toLocaleLowerCase('es') || '';
     let visible = 0;
     cards.forEach(card => {
-      const filtersOk = liveSelects.every(select => !select.value || card.dataset[select.id] === select.value);
+      const filtersOk = liveSelects.every(select => !select.value || card.dataset[select.id] === select.value)
+        && (!activeGoals || activeGoals.includes(card.dataset.o));
       const favOk = !favsOnly || favs.has(card.dataset.id);
       const searchable = card.textContent.toLocaleLowerCase('es');
       const shown = filtersOk && favOk && (!term || searchable.includes(term));
@@ -173,7 +208,11 @@
     empty.classList.toggle('hide', visible !== 0);
     count.textContent = `${visible} ${visible === 1 ? type.slice(0, -1) : type}`;
   };
-  liveSelects.forEach(select => select.addEventListener('change', apply));
+  liveSelects.forEach(select => select.addEventListener('change', () => {
+    activeGoals = null;
+    categoryButtons.forEach(button => button.classList.remove('active'));
+    apply();
+  }));
   search?.addEventListener('input', apply);
   favFilterButton?.addEventListener('click', () => {
     favsOnly = !favsOnly;
@@ -183,6 +222,9 @@
   });
   filters.querySelector('.reset-button').addEventListener('click', () => {
     liveSelects.forEach(select => { select.value = ''; });
+    activeGoals = null;
+    categoryButtons.forEach(button => button.classList.remove('active'));
+    if (!isPlans) { intro.querySelector('h2').textContent = 'Encuentra tu próximo ejercicio'; intro.querySelector('p').textContent = 'Filtra por objetivo, nivel o número de jugadores.'; }
     if (search) search.value = '';
     if (favsOnly) favFilterButton?.click(); else apply();
   });
@@ -339,6 +381,27 @@
   }
 
   if (isPlans) {
+    cards.forEach(card => {
+      const title = card.querySelector('h2');
+      const tag = card.querySelector('.tag');
+      if (!title) return;
+      const mode = card.dataset.p === '1' ? 'individual' : 'pareja';
+      const level = card.dataset.n;
+      const imageKey = `${mode}-${level.replace('ó', 'o')}`;
+      const cover = document.createElement('div');
+      cover.className = 'plan-cover';
+      cover.style.setProperty('--plan-image', `var(--img-plan-${imageKey})`);
+      cover.innerHTML = `<span class="plan-level level-${level.replace('ó', 'o')}">${escape(level)}</span><div class="plan-cover-copy"><small>${mode === 'individual' ? 'Entrenamiento individual' : 'Entrenamiento por parejas'}</small><strong>${escape(title.textContent.replace(' · 60 min', ''))}</strong><div class="plan-cover-progress"><i></i><span>0%</span></div><em>4 semanas · 3 días</em></div>`;
+      card.prepend(cover);
+      title.classList.add('plan-source-title');
+      tag?.classList.add('plan-source-tag');
+      const details = document.createElement('details');
+      details.className = 'plan-details';
+      details.innerHTML = '<summary>Ver las 3 sesiones y ejercicios</summary>';
+      [...card.querySelectorAll(':scope > section')].forEach(section => details.append(section));
+      card.append(details);
+    });
+
     const exerciseRows = [...main.querySelectorAll('li')].filter(row => /\b(?:IND|PAR)-\d{2}\b/.test(row.textContent));
     exerciseRows.forEach(row => {
       const id = row.textContent.match(/\b(?:IND|PAR)-\d{2}\b/)?.[0];
@@ -355,14 +418,19 @@
       const name = card.querySelector('h2')?.textContent;
       if (!name) return;
       const done = Object.keys(progressData()[name] || {}).length;
+      const percent = Math.round(done / 3 * 100);
+      const progress = card.querySelector('.plan-cover-progress');
+      if (progress) {
+        progress.querySelector('i').style.width = `${percent}%`;
+        progress.querySelector('span').textContent = `${percent}%`;
+      }
       let badge = card.querySelector('.plan-progress');
-      if (!done) { badge?.remove(); return; }
       if (!badge) {
         badge = document.createElement('span');
         badge.className = 'plan-progress';
-        card.querySelector('.tag')?.after(badge);
+        card.querySelector('.plan-details')?.before(badge);
       }
-      badge.textContent = `✓ ${done} ${done === 1 ? 'sesión completada' : 'sesiones completadas'}`;
+      badge.textContent = done ? `✓ ${done} ${done === 1 ? 'sesión completada' : 'sesiones completadas'}` : 'Preparado para empezar';
     });
     refreshPlanBadges();
 
