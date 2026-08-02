@@ -10,6 +10,7 @@
     set(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} }
   };
   const escape = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
+  const avatar = p => escape(p?.foto || `art/avatar-${(p?.color || 0) % 6}.svg`);
 
   const header = document.querySelector('header');
   // Marca de VizSoccer: la misma V de dos brazos que generan los iconos
@@ -39,7 +40,7 @@
   // dentro de la caja de su padre, así que dentro del header desaparecía en
   // cuanto se pasaba el hero y dejaba un hueco por el que se veía el contenido.
   header.innerHTML = `<div class="hero"><div><div class="eyebrow">Tecnificación de fútbol</div><h1>${title}</h1><p class="hero-copy">${description}</p><a class="hero-action" href="${ctaHref}">${cta}</a></div>${stats.length ? `<div class="hero-stats">` : ''}${stats.map(([value,label]) => `<div class="hero-stat"><strong>${value}</strong><span>${label}</span></div>`).join('')}${stats.length ? '</div>' : ''}</div>`;
-  header.insertAdjacentHTML('beforebegin', `<nav class="site-nav" aria-label="Navegación principal"><a class="brand" href="index.html" aria-label="VizSoccer">${brandMark}<span class="brand-name">Viz<em>Soccer</em></span></a><div class="nav-actions"><a class="nav-link" href="perfil.html"><img class="nav-avatar" src="art/avatar-${(window.VS ? VS.activo().color : 0) % 6}.svg" alt="" width="96" height="96">${window.VS ? escape(VS.activo().nombre) : 'Perfil'}</a></div></nav>`);
+  header.insertAdjacentHTML('beforebegin', `<nav class="site-nav" aria-label="Navegación principal"><a class="brand" href="index.html" aria-label="VizSoccer">${brandMark}<span class="brand-name">Viz<em>Soccer</em></span></a><div class="nav-actions"><a class="nav-link" href="perfil.html"><img class="nav-avatar" src="${avatar(window.VS ? VS.activo() : null)}" alt="" width="96" height="96">${window.VS ? escape(VS.activo().nombre) : 'Perfil'}</a></div></nav>`);
   const siteNav = document.querySelector('.site-nav');
   // Los filtros se pegan justo debajo de la barra, así que la altura hay que
   // medirla: con el notch del móvil la barra es más alta que su min-height.
@@ -78,7 +79,7 @@
   // repintarlo cuando se cambia de perfil o se le cambia el nombre.
   const enlacePerfil = siteNav.querySelector('.nav-link');
   window.VS?.alCambiar(p => {
-    enlacePerfil.innerHTML = `<img class="nav-avatar" src="art/avatar-${p.color % 6}.svg" alt="" width="96" height="96">${escape(p.nombre)}`;
+    enlacePerfil.innerHTML = `<img class="nav-avatar" src="${avatar(p)}" alt="" width="96" height="96">${escape(p.nombre)}`;
   });
 
   let installPrompt;
