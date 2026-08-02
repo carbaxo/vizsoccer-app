@@ -488,3 +488,18 @@ a,button,select,input,.card,.exercise-link{touch-action:manipulation;-webkit-tap
   .bloque{margin-top:1.5rem}
   .modal-acciones{grid-template-columns:1fr}
 }
+
+
+/* Foto personalizada del perfil */
+.fj-avatar,.perfil-chip img,.nav-avatar,.perfil-foto-preview{object-fit:cover;object-position:center}
+.perfil-foto-editor{grid-column:1/-1;display:flex;align-items:center;gap:.9rem;padding:.75rem;
+  border:1px solid var(--line);border-radius:var(--r);background:var(--surface-2)}
+.perfil-foto-preview{width:72px;height:72px;flex:0 0 auto;border-radius:50%;border:2px solid var(--primary-line);
+  box-shadow:var(--glow)}
+.perfil-foto-acciones{display:flex;align-items:center;flex-wrap:wrap;gap:.45rem;min-width:0}
+.perfil-form .perfil-foto-boton,.perfil-foto-quitar{display:inline-flex;align-items:center;justify-content:center;width:auto;
+  min-height:38px;padding:.55rem .85rem;border-radius:var(--pill);font:700 .76rem var(--font);cursor:pointer}
+.perfil-form .perfil-foto-boton{background:var(--primary);color:var(--on-primary);border:0;letter-spacing:normal;text-transform:none}
+.perfil-foto-input{position:absolute;width:1px!important;height:1px!important;opacity:0;pointer-events:none}
+.perfil-foto-quitar{border:1px solid var(--line);background:transparent;color:var(--muted)}
+.perfil-foto-acciones small{flex-basis:100%;font-size:.7rem;color:var(--faint);line-height:1.35}
