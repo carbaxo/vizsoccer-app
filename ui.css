@@ -533,3 +533,33 @@ a,button,select,input,.card,.exercise-link{touch-action:manipulation;-webkit-tap
 .bottom-nav{box-shadow:0 -8px 28px rgba(0,0,0,.2)}.bn-item{border-radius:14px 14px 0 0}.bn-item.active{color:var(--primary-ink);background:linear-gradient(180deg,var(--primary-tint),transparent)}.bn-item.active .bn-ico{transform:translateY(-3px) scale(1.12)}
 @media(max-width:700px){.explore-dashboard{padding-top:.85rem}.explore-welcome p{max-width:240px}.quick-categories{grid-auto-columns:42%;padding-left:0}.section-heading small{display:none}.featured-plan{min-height:170px}.plans-page main{padding-inline:12px}.catalog-page .catalog-intro{padding-top:1rem}}
 @media(min-width:900px){.quick-categories{grid-auto-flow:initial;grid-template-columns:repeat(6,1fr);overflow:visible}.quick-category{min-height:190px}}
+
+
+/* ---------- Carta de jugador estilo football card ---------- */
+.perfil-page{position:relative;background:#061006}
+.perfil-page::before{content:'';position:fixed;inset:0;z-index:-1;background-image:linear-gradient(rgba(3,14,4,.8),rgba(3,14,4,.96)),var(--img-plan-individual-avanzado);background-size:cover;background-position:center;opacity:.78}
+.perfil-page .ficha-jugador{padding-top:.4rem}
+.perfil-page .fj-carta{width:min(350px,92vw);aspect-ratio:5/7.15;border-radius:0;filter:drop-shadow(0 24px 28px rgba(0,0,0,.58));transition:transform .7s cubic-bezier(.22,1,.36,1)}
+.perfil-page .fj-cara{border-radius:0;box-shadow:none;clip-path:polygon(4% 16%,18% 11%,28% 12%,36% 7%,43% 12%,50% 4%,57% 12%,64% 7%,72% 12%,82% 11%,96% 16%,100% 23%,100% 82%,94% 91%,50% 100%,6% 91%,0 82%,0 23%)}
+.perfil-page .fj-frente{position:absolute;padding:2.65rem 1.55rem 2.35rem;color:#22170d;background:radial-gradient(circle at 78% 23%,rgba(255,245,218,.72),transparent 25%),repeating-linear-gradient(135deg,rgba(255,255,255,.075) 0 22px,rgba(72,36,10,.055) 22px 44px),linear-gradient(145deg,#c78a50 0%,#f2c18e 38%,#cc8e55 72%,#8a552f 100%)}
+.perfil-page .fj-frente::before,.perfil-page .fj-dorso::before{content:'';position:absolute;inset:5px;z-index:0;pointer-events:none;clip-path:inherit;border:2px solid rgba(82,45,20,.52);background:linear-gradient(120deg,rgba(255,255,255,.13),transparent 35%,rgba(73,34,9,.09))}
+.perfil-page .fj-frente>*{position:relative;z-index:1}
+.perfil-page .fj-cabecera{min-height:150px;align-items:flex-start}
+.perfil-page .fj-general{padding:.65rem 0 0 .25rem;text-align:center;z-index:2}
+.perfil-page .fj-general strong{font-size:4.25rem;font-weight:500;line-height:.82;color:#17120e;text-shadow:0 1px rgba(255,255,255,.32)}
+.perfil-page .fj-general span{font-size:1.45rem;font-weight:700;letter-spacing:.02em;color:#21170f;margin-top:.55rem}
+.perfil-page .fj-identidad{position:relative;display:grid;justify-items:center;margin:.1rem .1rem 0 0}
+.perfil-page .fj-avatar{width:142px;height:142px;border:4px solid rgba(92,51,23,.55);border-radius:50%;background:#274d16;box-shadow:0 7px 18px rgba(54,27,8,.28),inset 0 0 0 3px rgba(255,240,208,.35);object-fit:cover}
+.perfil-page .fj-brand{position:absolute;right:-3px;bottom:-3px;display:grid;place-items:center;width:39px;height:39px;border-radius:50%;background:linear-gradient(145deg,#163d0c,#44bb00);border:3px solid #efc28f;color:#fff;font:900 1.1rem var(--font);box-shadow:0 4px 10px #4c270a55}
+.perfil-page .fj-nombre{margin:.55rem -.45rem .2rem;padding:.62rem .45rem .7rem;border-top:1px solid rgba(75,42,20,.35);border-bottom:2px solid rgba(75,42,20,.45);background:rgba(255,230,198,.16);color:#18110c;font-size:1.38rem;font-weight:700;text-align:center;text-transform:uppercase;letter-spacing:.015em;text-shadow:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.perfil-page .fj-atributos{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr);gap:.15rem 1.55rem;align-content:center;margin:.25rem .45rem .15rem}
+.perfil-page .fj-attr{display:flex;align-items:center;justify-content:center;gap:.45rem;border:0;padding:.08rem 0}
+.perfil-page .fj-attr-val{font-size:1.65rem;font-weight:600;color:#17110d;text-align:right;line-height:1;font-variant-numeric:tabular-nums}
+.perfil-page .fj-attr-nom{font-size:.9rem;font-weight:800;letter-spacing:.045em;color:#24170f}
+.perfil-page .fj-attr-barra{display:none}
+.perfil-page .fj-pie{margin:0 .35rem;padding:.65rem .15rem 1rem;border-top:2px solid rgba(75,42,20,.42);color:#25180f;font-size:.72rem;font-weight:800;opacity:1}
+.perfil-page .fj-dorso{padding:3.25rem 1.75rem 3rem;background:linear-gradient(145deg,#15380d,#071d08);color:#fff}
+.perfil-page .fj-dorso::before{border-color:rgba(99,217,22,.32)}
+.perfil-page .fj-dorso h3{color:#c8f2ae}.perfil-page .fj-dorso p,.perfil-page .fj-dorso .fj-nota{color:#c2d0bb!important}.perfil-page .fj-datos>div{background:#ffffff10;border-color:#ffffff1f}.perfil-page .fj-datos dt{color:#a8bb9f}.perfil-page .fj-datos dd{color:#fff}
+.perfil-page .fj-nivel{padding:.25rem .2rem}.perfil-page .fj-nivel-txt strong{color:#eaf4e5}.perfil-page .fj-nivel-txt,.perfil-page .fj-nivel-txt span{color:#aebca8}
+@media(max-width:370px){.perfil-page .fj-carta{width:94vw}.perfil-page .fj-frente{padding:2.3rem 1.25rem 2rem}.perfil-page .fj-cabecera{min-height:132px}.perfil-page .fj-avatar{width:124px;height:124px}.perfil-page .fj-general strong{font-size:3.7rem}.perfil-page .fj-atributos{gap:.1rem 1rem}.perfil-page .fj-attr-val{font-size:1.45rem}}
