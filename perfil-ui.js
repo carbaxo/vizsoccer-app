@@ -60,7 +60,6 @@
       <div class="fj-attr">
         <span class="fj-attr-val" data-val="${a.valor}">0</span>
         <span class="fj-attr-nom">${a.corto}</span>
-        <i class="fj-attr-barra"><b style="--v:${a.valor}%"></b></i>
       </div>`).join('');
 
     return `
@@ -69,7 +68,10 @@
           <div class="fj-cara fj-frente">
             <div class="fj-cabecera">
               <div class="fj-general"><strong data-general="${f.general}">0</strong><span>${esc(p.posicion)}</span></div>
-              <img class="fj-avatar" src="${esc(fotoPerfil(p))}" alt="" width="96" height="96">
+              <div class="fj-identidad">
+                <img class="fj-avatar" src="${esc(fotoPerfil(p))}" alt="Foto de ${esc(p.nombre)}" width="160" height="160">
+                <span class="fj-brand" aria-label="VizSoccer">V</span>
+              </div>
             </div>
             <div class="fj-nombre">${esc(p.nombre)}</div>
             <div class="fj-atributos">${filas}</div>
